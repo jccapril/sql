@@ -183,3 +183,42 @@ SELECT CONCAT(vend_name, ' (', vend_country, ')') AS vend_title
 FROM Vendors
 ORDER BY vend_name;
 ```
+
+### 执行算数计算
+```
+SELECT 	prod_id, 
+				quantity, 
+				item_price, 
+				quantity*item_price AS expanded_price
+FROM OrderItems
+WHERE order_num = 20008;
+```
+
+## 使用函数处理数据
+### 文本处理函数
+#### UPPER() 将文本转换为大写
+```
+SELECT vend_name, UPPER(vend_name) as vend_name_upcase
+FROM Vendors 
+ORDER BY vend_name;
+```
+#### 常用的文本函数
+- LEFT()    返回字符串左边的字符
+- RIGTH()   返回字符串右边的字符
+- LENGTH()  返回字符串的changed
+- UPPER()   将字符串转换为大写
+- LOWER()   将字符串转换为小写
+- LTRIM()   去掉字符左边的空格
+- RTRIM()   去掉字符右边的空格
+
+### 日期和时间处理函数
+```
+SELECT order_num 
+FROM Orders
+WHERE YEAR(order_date) = 2012;
+```
+
+### 数值处理函数
+略
+
+## 汇总数据
