@@ -222,3 +222,82 @@ WHERE YEAR(order_date) = 2012;
 略
 
 ## 汇总数据
+### 聚集函数
+- AVG()			返回某列的平均数
+- COUNT()		返回某列的行数
+- MAX()			返回某列的最大值
+- MIN()			返回某列的最小值
+- SUM()			返回某列之和
+
+### ACG()函数
+
+#### 返回 Products 表中所有产品的平均价格
+```
+SELECT AVG(prod_price) AS avg_price 
+FROM Products
+```
+
+####  返回 供应商ID vend_id = DLL01 的产品的平均价格
+```
+SELECT AVG(prod_price) AS avg_price 
+FROM Products
+WHERE vend_id = 'DLL01';
+```
+### COUNT()函数
+#### 返回 Customers 表中顾客的总数
+```
+SELECT COUNT(*) AS num_cust 
+FROM Customers;
+```
+#### 返回具有电子邮件地址的客户总数
+```
+SELECT COUNT(cust_email) AS num_cust 
+FROM Customers;
+```
+#### COUNT()会忽略指定列的值为空的行，而COUNT(*)不会
+
+### MAX()函数
+### 返回 Products 表中最贵的物品价格
+```
+SELECT MAX(prod_price) as max_price 
+FROM Products;
+```
+### MIN()函数
+### 返回 Products 表中最便宜的物品价格
+```
+SELECT MIN(prod_price) as min_price 
+FROM Products;
+```
+### SUM()函数
+#### 返回订单中所有物品数量之和
+```
+SELECT SUM(quantity) AS items_ordered
+FROM OrderItems
+WHERE order_num = 20005;
+```
+#### 返回订单中所有物品价钱之和
+```
+SELECT SUM(quantity*item_price) AS items_price
+FROM OrderItems
+WHERE order_num = 20005;
+```
+### 聚集不同值
+#### 上面的表达式输出比下面的低，说明有很多物品具有相同的较低价格。
+```
+SELECT AVG(prod_price) AS avg_price
+FROM Products
+WHERE vend_id = 'DLL01';
+
+SELECT AVG(DISTINCT prod_price) AS avg_price
+FROM Products
+WHERE vend_id = 'DLL01';
+```
+
+### 组合聚集函数
+```
+SELECT	COUNT(*) AS num_items,
+				MIN(prod_price) AS price_min,
+				MAX(prod_price) AS price_max,
+				AVG(prod_price) AS price_avg
+FROM Products;
+```
