@@ -301,3 +301,110 @@ SELECT	COUNT(*) AS num_items,
 				AVG(prod_price) AS price_avg
 FROM Products;
 ```
+
+## 分组数据
+### 按 vend_id 排序并分组数据。
+```
+SELECT vend_id, COUNT(*) AS num_prods
+FROM Products
+GROUP BY vend_id;
+```
+### 过滤分组
+#### 过滤COUNT(*)>=2 的分组
+```
+SELECT cust_id, COUNT(*) AS orders 
+FROM Orders
+GROUP BY cust_id
+HAVING COUNT(*) >= 2;
+```
+#### WHERE 子句过滤所有 prod_price 至少为 4 的行，然后按 vend_id 分组数据，HAVING 子句过滤计数为 2 或 2 以上的分组
+```
+SELECT vend_id, COUNT(*) AS num_prods
+FROM Products
+WHERE prod_price >= 4
+GROUP BY vend_id 
+HAVING COUNT(*) >= 2;
+```
+
+### 分组和排序
+```
+SELECT order_num, COUNT(*) AS items 
+FROM OrderItems
+GROUP BY order_num
+HAVING COUNT(*) >= 3
+ORDER BY items, order_num;
+```
+
+### 子查询
+```
+SELECT cust_id 
+FROM Orders
+WHERE order_num IN (
+	SELECT order_num
+	FROM OrderItems
+	WHERE prod_id = 'RGAN01'
+);
+```
+
+```
+SELECT cust_name, cust_contact
+FROM Customers
+WHERE cust_id IN(
+	SELECT cust_id 
+	FROM Orders
+	WHERE order_num IN (
+		SELECT order_num 
+		FROM OrderItems
+		WHERE prod_id = 'RGAN01'
+	)
+);
+```
+
+### 作为计算字段使用自查询
+```
+SELECT	cust_name,
+				cust_state,
+				(SELECT COUNT(*) 
+					FROM Orders
+					WHERE Orders.cust_id = Customers.cust_id) AS orders 
+FROM Customers
+ORDER BY cust_name;
+```
+
+
+## 联结表
+### 创建联结
+```
+SELECT vend_name, prod_name, prod_price
+FROM Vendors, Products
+WHERE Vendors.vend_id = Products.vend_id;
+```
+### 内联结
+#### 和上面的语句 其实是一样的
+```
+SELECT vend_name, prod_name, prod_price
+FROM Vendors INNER JOIN Products
+ON Vendors.vend_id = Products.vend_id;
+```
+
+### 联结多个表
+```
+SELECT prod_name, vend_name, prod_price, quantity
+FROM OrderItems, Products, Vendors
+WHERE Products.vend_id = Vendors.vend_id
+	AND OrderItems.prod_id = Products.prod_id
+	AND order_num = 20007;
+```
+这个例子显示订单20007的中的物品。该物品存储在 OrderItems 表中。每个产品按其 prod_id 存储，它引用 Products 表中的产品。这个产品通过 vend_id 联结到 Vendors 表中相应的供应商， vend_id 存储在每个产品的记录中。这里的 FROM 子句列出三个表，WHERE 子句定义这两个联结条件，而第三个联结条件用来过滤出订单 20007 中的物品
+
+
+```
+SELECT cust_name, cust_contact 
+FROM OrderItems, Customers,  Orders
+WHERE Customers.cust_id = Orders.cust_id
+	AND Orders.order_num = OrderItems.order_num
+	AND prod_id = 'RGAN01'
+```
+和 自查询第二个例子表达的意思相同，但是最有效的方法应该用联结
+
+## 高级联结
