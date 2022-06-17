@@ -175,3 +175,11 @@ SELECT prod_id, prod_name
 FROM Products
 WHERE prod_name LIKE '__ inch teddy bear';
 ```
+
+## 创建计算字段
+### 拼接字段
+```
+SELECT CONCAT(vend_name, ' (', vend_country, ')') AS vend_title
+FROM Vendors
+ORDER BY vend_name;
+```
